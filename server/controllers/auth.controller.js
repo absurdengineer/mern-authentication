@@ -1,7 +1,11 @@
 const Joi = require("joi");
 const _ = require("underscore");
 const { cookieMaxAge } = require("../constants/authentication.constant");
-const { getAccessToken, getRefreshToken } = require("../helpers/token.helper");
+const {
+  getAccessToken,
+  getRefreshToken,
+  verifyRefreshToken,
+} = require("../helpers/token.helper");
 const User = require("../models/user.model");
 
 const validateAuth = (auth) =>
@@ -61,7 +65,18 @@ const login = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
-  return res.status(200).json({ message: "Refresh Successful" });
+  const cookies = req.cookies;
+  if (!cookies?.jwt) throw { statusCode: 401, message: "Unauthorized" };
+  const refreshToken = cookies.jwt;
+  let user = verifyRefreshToken(refreshToken);
+  user = await User.findOne({ where: { username: user.username } });
+  if (!user) throw { statusCode: 401, message: "Unauthorized" };
+  const accessToken = getAccessToken(
+    _.omit(user.dataValues, "password", "createdAt", "updatedAt", "deletedAt")
+  );
+  return res
+    .status(200)
+    .json({ data: { accessToken }, message: "Refresh Successful" });
 };
 
 const logout = async (req, res) => {
