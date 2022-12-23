@@ -46,7 +46,7 @@ const User = database.define(
 );
 
 // Custom model method
-User.findByCredentials = async (username, password) => {
+User.findByCredentials = async ({ username, password }) => {
   const user = await User.findOne({ where: { username } });
   if (!user) throw { statusCode: 400, message: "Invalid credentials" };
   const isValid = await bcrypt.compare(password, user.getDataValue("password"));

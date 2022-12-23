@@ -1,4 +1,7 @@
 const Joi = require("joi");
+const _ = require("underscore");
+const { cookieMaxAge } = require("../constants/authentication.constant");
+const { getAccessToken, getRefreshToken } = require("../helpers/token.helper");
 const User = require("../models/user.model");
 
 const validateAuth = (auth) =>
@@ -40,7 +43,21 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  return res.status(200).json({ message: "Login Successful" });
+  await validateAuth({ ...req.body, register: 0 });
+  const user = await User.findByCredentials(req.body);
+  const accessToken = getAccessToken(
+    _.omit(user.dataValues, "password", "createdAt", "updatedAt", "deletedAt")
+  );
+  const refreshToken = getRefreshToken(_.pick(user.dataValues, "username"));
+  res.cookie("jwt", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: cookieMaxAge,
+  });
+  return res
+    .status(200)
+    .json({ data: { accessToken }, message: "Login Successful" });
 };
 
 const refresh = async (req, res) => {
