@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const AuthRouter = require("./routers/auth.router");
 require("./config/database.config");
 
@@ -9,6 +10,7 @@ const port = process.env.PORT || 3030;
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
