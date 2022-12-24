@@ -6,6 +6,8 @@ import { validateAuth } from "../validations/auth.validations";
 import { toast } from "react-toastify";
 import { register } from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import { useGlobalState } from "../hooks/useGlobalState";
+import { LOADING } from "../constants/action.constants";
 
 const initialFormData: RegisterFormData = {
   firstName: "",
@@ -22,6 +24,7 @@ const RegisterForm: NoPropComponent = () => {
   const [termsError, setTermsError] = useState<string>("");
 
   const navigate = useNavigate();
+  const [, dispatch] = useGlobalState();
 
   const handleChange: HandleInputChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -29,6 +32,7 @@ const RegisterForm: NoPropComponent = () => {
 
   const handleSubmit: HandleFormSubmit = async (event) => {
     try {
+      dispatch({ type: LOADING, payload: true });
       toast.dismiss();
       event.preventDefault();
       if (!terms)
@@ -51,6 +55,8 @@ const RegisterForm: NoPropComponent = () => {
       if (error.response && [400].includes(error.response.status))
         return toast.error(error.response.data.message);
       console.log(error);
+    } finally {
+      dispatch({ type: LOADING, payload: false });
     }
   };
 

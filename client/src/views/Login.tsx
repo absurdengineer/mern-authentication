@@ -19,6 +19,7 @@ const Login: NoPropComponent = () => {
             <img
               src="https://miro.medium.com/max/1200/1*A1bEPfQeGGKp98z1cdctVA.png"
               className="h-12 mx-auto"
+              alt="Login Side"
             />
           </div>
           <div className="mt-12 flex flex-col items-center">

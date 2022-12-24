@@ -5,8 +5,12 @@ import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 import Register from "./views/Register";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "./components/Loader";
+import { useGlobalState } from "./hooks/useGlobalState";
 
 const App = () => {
+  const [globalState] = useGlobalState();
+
   return (
     <>
       <ToastContainer
@@ -21,6 +25,7 @@ const App = () => {
         pauseOnHover
         theme="colored"
       />
+      {globalState.loading && <Loader />}
       <Routes>
         <Route path="auth">
           <Route path="register" element={<Register />} />

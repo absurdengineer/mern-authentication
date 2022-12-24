@@ -5,7 +5,7 @@ interface AuthSchema extends RegisterFormData {
   register: number;
 }
 
-export const validateAuth = (auth: AuthSchema) =>
+export const validateAuth = (auth: Partial<AuthSchema>) =>
   Joi.object({
     firstName: Joi.string().label("First Name").min(3).when("register", {
       is: 1,
