@@ -6,5 +6,5 @@ export const register: RegisterService = async (payload) => {
 };
 
 export const login: LoginService = async (payload) => {
-  return httpService.post(`/auth/login`, payload);
+  return httpService.post(`/auth/login`, payload, { withCredentials: true });
 };
