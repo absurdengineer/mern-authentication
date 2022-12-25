@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, Dispatch } from "react";
-import { LOADING, LOGIN } from "../constants/action.constants";
+import { LOADING, LOGIN, LOGOUT } from "../constants/action.constants";
 import { Reducer } from "../types/function.types";
 import { ChildrenProps } from "../types/prop.types";
 import { GlobalState } from "../types/state.types";
@@ -25,6 +25,11 @@ const globalReducer: Reducer = (state, action) => {
       return {
         ...state,
         accessToken: action.payload,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        accessToken: null,
       };
     default:
       return state;
